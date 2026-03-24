@@ -1,0 +1,355 @@
+:root {
+  --bg: #f3ead8;
+  --bg-shadow: rgba(98, 74, 45, 0.12);
+  --panel: rgba(255, 251, 243, 0.84);
+  --panel-border: rgba(120, 88, 49, 0.2);
+  --text: #2c2217;
+  --muted: #6f5b45;
+  --accent: #b65a35;
+  --accent-strong: #8f3f20;
+  --ok: #2b7a4b;
+  --warn: #b87023;
+  --error: #9b2d30;
+  --shadow-lg: 0 24px 60px rgba(81, 57, 24, 0.16);
+  --radius-xl: 28px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(244, 198, 126, 0.28), transparent 28%),
+    radial-gradient(circle at top right, rgba(184, 88, 55, 0.16), transparent 26%),
+    linear-gradient(180deg, #f8f1e4 0%, #efe2cb 100%);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 40%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(120, 88, 49, 0.03),
+      rgba(120, 88, 49, 0.03) 1px,
+      transparent 1px,
+      transparent 20px
+    );
+  pointer-events: none;
+}
+
+.layout {
+  position: relative;
+  width: min(1240px, calc(100% - 32px));
+  margin: 24px auto 40px;
+  display: grid;
+  gap: 20px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(20px);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+  padding: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 12px;
+  color: var(--accent-strong);
+}
+
+.hero h1,
+.panel-header h2 {
+  margin: 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", serif;
+  font-weight: 700;
+}
+
+.hero h1 {
+  font-size: clamp(2.4rem, 6vw, 4.3rem);
+  line-height: 0.92;
+}
+
+.lede,
+.panel-header p,
+.meta-label,
+.form-status,
+.event-detail,
+.thread-status,
+dt {
+  color: var(--muted);
+}
+
+.hero-status {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.status-chip,
+.thread-state,
+.event-tags span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: rgba(182, 90, 53, 0.12);
+  color: var(--accent-strong);
+}
+
+[data-state="approval"] {
+  background: rgba(184, 112, 35, 0.14);
+  color: var(--warn);
+}
+
+[data-state="error"] {
+  background: rgba(155, 45, 48, 0.12);
+  color: var(--error);
+}
+
+[data-state="success"] {
+  background: rgba(43, 122, 75, 0.14);
+  color: var(--ok);
+}
+
+[data-state="typing"],
+[data-state="thinking"],
+[data-state="working"],
+[data-state="editing"],
+[data-state="subagent_one"],
+[data-state="subagent_many"] {
+  background: rgba(182, 90, 53, 0.12);
+  color: var(--accent-strong);
+}
+
+.meta-block {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(120, 88, 49, 0.12);
+}
+
+.meta-block strong {
+  display: block;
+  margin-top: 6px;
+}
+
+.prompt-panel {
+  padding: 24px 28px;
+}
+
+.panel-header {
+  margin-bottom: 16px;
+}
+
+.prompt-form {
+  display: grid;
+  gap: 12px;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid rgba(120, 88, 49, 0.16);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.74);
+  padding: 16px;
+  font: inherit;
+  color: var(--text);
+  min-height: 100px;
+}
+
+button {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: white;
+  padding: 12px 18px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(143, 63, 32, 0.18);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.prompt-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 20px;
+}
+
+.grid > .panel {
+  min-width: 0;
+  padding: 24px 28px;
+}
+
+.thread-list,
+.event-list {
+  display: grid;
+  gap: 12px;
+  max-height: 720px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  padding-right: 6px;
+}
+
+.thread-card,
+.event-card {
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(120, 88, 49, 0.12);
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.thread-card {
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    background 160ms ease;
+}
+
+.thread-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(182, 90, 53, 0.28);
+}
+
+.thread-card.is-selected {
+  border-color: rgba(182, 90, 53, 0.44);
+  background: rgba(255, 248, 240, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(182, 90, 53, 0.12);
+}
+
+.event-card.is-matched {
+  border-color: rgba(182, 90, 53, 0.28);
+  background: rgba(255, 248, 240, 0.82);
+}
+
+.thread-card header,
+.event-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.thread-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.thread-meta code,
+.thread-card dd,
+.event-detail,
+.panel-header p,
+.thread-status,
+.event-line time {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+code,
+.event-kind,
+.event-detail,
+dd {
+  font-family: "SF Mono", "IBM Plex Mono", Menlo, monospace;
+}
+
+dl {
+  margin: 14px 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+dt {
+  font-size: 12px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+dd {
+  margin: 0;
+  word-break: break-word;
+}
+
+.event-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.event-kind {
+  font-weight: 700;
+}
+
+.empty-state {
+  padding: 18px;
+  border-radius: var(--radius-md);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px dashed rgba(120, 88, 49, 0.24);
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .layout {
+    width: min(100% - 20px, 1240px);
+  }
+
+  .panel,
+  .prompt-panel,
+  .grid > .panel {
+    border-radius: 22px;
+  }
+
+  dl {
+    grid-template-columns: 1fr;
+  }
+}

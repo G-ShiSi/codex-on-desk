@@ -1,0 +1,63 @@
+{
+  "name": "codex-on-desk",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/electron/electron/main.js",
+  "scripts": {
+    "monitor": "tsx scripts/monitor.ts",
+    "dashboard": "tsx scripts/dashboard.ts",
+    "build:electron": "tsc -p tsconfig.electron.json",
+    "electron": "npm run build:electron && electron dist/electron/electron/main.js",
+    "dist": "npm run build:electron && electron-builder",
+    "dist:dir": "npm run build:electron && electron-builder --dir",
+    "dist:mac": "npm run build:electron && electron-builder --mac",
+    "dist:win": "npm run build:electron && electron-builder --win",
+    "schema:generate": "sh scripts/generate-codex-schema.sh",
+    "typecheck": "tsc --noEmit"
+  },
+  "build": {
+    "appId": "com.gshisi.codexondesk",
+    "productName": "Codex on Desk",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "src/electron/assets/**/*",
+      "src/electron/renderer/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "dist/electron/electron/main.js"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "src/electron/assets/icon.png"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ],
+      "icon": "src/electron/assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.0",
+    "electron": "^41.0.3",
+    "electron-builder": "^26.8.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

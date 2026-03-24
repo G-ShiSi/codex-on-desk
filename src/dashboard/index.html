@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codex 桌宠状态面板</title>
+    <link rel="stylesheet" href="/app.css" />
+  </head>
+  <body>
+    <div class="backdrop"></div>
+    <main class="layout">
+      <section class="hero panel">
+        <div class="hero-copy">
+          <p class="eyebrow">Runtime Mirror</p>
+          <h1>Codex 状态流</h1>
+          <p class="lede">
+            实时查看和桌宠同一运行时下的连接状态、归一化状态，以及每个线程的活动情况。
+          </p>
+        </div>
+        <div class="hero-status">
+          <div class="status-chip" id="global-state-chip">idle</div>
+          <div class="meta-block">
+            <span class="meta-label">连接状态</span>
+            <strong id="connection-text">连接中</strong>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label">运行平台</span>
+            <strong id="platform-text">未知</strong>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label">事件总数</span>
+            <strong id="event-count-text">0</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel prompt-panel">
+        <div class="panel-header">
+          <h2>运行测试 Prompt</h2>
+          <p>仅在 managed 模式下可用，用来观察状态切换过程。</p>
+        </div>
+        <form id="prompt-form" class="prompt-form">
+          <textarea
+            id="prompt-input"
+            name="prompt"
+            rows="3"
+            placeholder="只回复 OK。"
+          >只回复 OK。</textarea>
+          <div class="prompt-actions">
+            <button type="submit" id="prompt-submit">运行</button>
+            <span class="form-status" id="form-status"></span>
+          </div>
+        </form>
+      </section>
+
+      <section class="grid">
+        <section class="panel">
+          <div class="panel-header">
+            <h2>线程状态</h2>
+            <p>每个线程在归一化和聚合之后的当前状态。</p>
+          </div>
+          <div id="threads-empty" class="empty-state">还没有线程。</div>
+          <div id="threads-list" class="thread-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>最近事件</h2>
+            <p id="events-subtitle">按时间倒序展示最新的归一化事件。</p>
+          </div>
+          <div id="events-empty" class="empty-state" hidden>当前筛选下还没有事件。</div>
+          <div id="events-list" class="event-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

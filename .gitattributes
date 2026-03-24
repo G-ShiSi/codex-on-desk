@@ -1,0 +1,11 @@
+# Normalize text files with LF in the repository
+* text=auto eol=lf
+
+# Keep binary assets untouched
+*.png binary
+*.ico binary
+*.icns binary
+*.dmg binary
+*.exe binary
+*.zip binary
+*.blockmap binary

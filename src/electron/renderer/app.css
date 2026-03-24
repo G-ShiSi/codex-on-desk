@@ -1,0 +1,322 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  font-family:
+    "SF Pro Display",
+    "PingFang SC",
+    "Segoe UI",
+    sans-serif;
+}
+
+#scene {
+  --bubble-bg: rgba(255, 251, 239, 0.94);
+  --bubble-border: rgba(61, 44, 24, 0.18);
+  --bubble-shadow: rgba(38, 28, 16, 0.18);
+  --accent: #c68d2b;
+  --accent-soft: rgba(198, 141, 43, 0.2);
+  --accent-strong: rgba(198, 141, 43, 0.45);
+  --text-main: #2a2119;
+  --text-subtle: rgba(42, 33, 25, 0.7);
+  --bubble-safe-space: 0px;
+  --pet-width: 190%;
+  --pet-height: 130%;
+  --pet-bottom: -16%;
+  --stage-width: 56%;
+  --stage-height: 16%;
+  --pet-tint-filter: none;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#scene[data-size="S"] {
+  --pet-width: 156%;
+  --pet-height: 108%;
+  --pet-bottom: -10%;
+  --stage-width: 46%;
+  --stage-height: 12%;
+}
+
+#scene[data-size="M"] {
+  --pet-width: 190%;
+  --pet-height: 130%;
+  --pet-bottom: -16%;
+  --stage-width: 56%;
+  --stage-height: 16%;
+}
+
+#scene[data-size="L"] {
+  --pet-width: 228%;
+  --pet-height: 156%;
+  --pet-bottom: -22%;
+  --stage-width: 66%;
+  --stage-height: 18%;
+}
+
+.scene-glow,
+.scene-rings {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.scene-glow {
+  background:
+    radial-gradient(circle at 50% 78%, var(--accent-strong) 0, transparent 32%),
+    radial-gradient(circle at 50% 62%, var(--accent-soft) 0, transparent 52%);
+  filter: blur(10px);
+  opacity: 0.95;
+  transition: opacity 180ms ease, transform 220ms ease, background 220ms ease;
+}
+
+.scene-rings {
+  inset: 14% 8% 2%;
+  background:
+    radial-gradient(circle at 50% 72%, rgba(255, 255, 255, 0.25) 0 2px, transparent 2px),
+    radial-gradient(circle at 50% 72%, rgba(255, 255, 255, 0.12) 0 28%, transparent 29%),
+    radial-gradient(circle at 50% 72%, rgba(255, 255, 255, 0.08) 0 42%, transparent 43%);
+  opacity: 0.45;
+  animation: ringsDrift 8s ease-in-out infinite;
+}
+
+#status-bubble {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 2;
+  width: min(236px, calc(100% - 28px));
+  max-width: calc(100% - 28px);
+  padding: 10px 12px 11px;
+  border: 1px solid var(--bubble-border);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 249, 236, 0.92)),
+    var(--bubble-bg);
+  box-shadow:
+    0 14px 30px -18px var(--bubble-shadow),
+    0 8px 18px -16px rgba(255, 255, 255, 0.7) inset;
+  backdrop-filter: blur(14px) saturate(1.05);
+  transform: translateX(-50%) translateY(0) scale(1);
+  transform-origin: 50% 100%;
+  transition:
+    opacity 180ms ease,
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+  pointer-events: none;
+}
+
+#status-bubble.is-hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-10px) scale(0.96);
+}
+
+#status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#status-title {
+  margin-top: 8px;
+  color: var(--text-main);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+#status-detail {
+  margin-top: 4px;
+  color: var(--text-subtle);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+#pet-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  cursor: grab;
+  position: relative;
+  overflow: hidden;
+  padding-top: calc(var(--bubble-safe-space) + 6px);
+  transform: translateY(0);
+}
+
+#pet-container.dragging {
+  cursor: grabbing;
+}
+
+.pet-stage {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  width: var(--stage-width);
+  height: var(--stage-height);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent) 22%, rgba(35, 25, 18, 0.3)), rgba(35, 25, 18, 0.02) 68%, transparent 80%);
+  filter: blur(10px);
+  transform: translateX(-50%) scale(1);
+  transform-origin: 50% 50%;
+  transition: transform 180ms ease, opacity 180ms ease, background 220ms ease;
+}
+
+#clawd {
+  width: var(--pet-width);
+  height: var(--pet-height);
+  position: absolute;
+  left: -45%;
+  top: auto;
+  bottom: var(--pet-bottom);
+  pointer-events: none;
+  filter:
+    var(--pet-tint-filter)
+    drop-shadow(0 14px 20px rgba(24, 17, 12, 0.12))
+    drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
+  transform-origin: 50% 78%;
+  animation: petFloat 4.8s ease-in-out infinite;
+}
+
+#clawd.state-enter {
+  animation:
+    petReveal 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    petFloat 4.8s ease-in-out infinite 240ms;
+}
+
+#scene[data-state="disconnected"] {
+  --accent: #6e8198;
+  --accent-soft: rgba(110, 129, 152, 0.16);
+  --accent-strong: rgba(110, 129, 152, 0.32);
+}
+
+#scene[data-state="thinking"] {
+  --accent: #7284ff;
+  --accent-soft: rgba(114, 132, 255, 0.18);
+  --accent-strong: rgba(114, 132, 255, 0.42);
+}
+
+#scene[data-state="working"],
+#scene[data-state="juggling"],
+#scene[data-state="carrying"] {
+  --accent: #5f74ff;
+  --accent-soft: rgba(95, 116, 255, 0.18);
+  --accent-strong: rgba(95, 116, 255, 0.38);
+}
+
+#scene[data-state="notification"],
+#scene[data-state="attention"] {
+  --accent: #8797ff;
+  --accent-soft: rgba(135, 151, 255, 0.2);
+  --accent-strong: rgba(135, 151, 255, 0.42);
+}
+
+#scene[data-state="error"] {
+  --accent: #6071ff;
+  --accent-soft: rgba(96, 113, 255, 0.18);
+  --accent-strong: rgba(96, 113, 255, 0.4);
+}
+
+#scene[data-state="sleeping"],
+#scene[data-state="dozing"],
+#scene[data-state="mini-sleep"] {
+  --accent: #95a3d9;
+  --accent-soft: rgba(149, 163, 217, 0.16);
+  --accent-strong: rgba(149, 163, 217, 0.32);
+}
+
+#scene[data-state="mini-idle"] .scene-rings,
+#scene[data-state="mini-peek"] .scene-rings,
+#scene[data-state="mini-alert"] .scene-rings,
+#scene[data-state="mini-happy"] .scene-rings,
+#scene[data-state="mini-sleep"] .scene-rings {
+  opacity: 0.18;
+}
+
+#scene[data-state="dragging"] .scene-glow,
+#pet-container.dragging .pet-stage {
+  transform: scale(1.04);
+}
+
+#scene[data-state="dragging"] #clawd,
+#pet-container.dragging #clawd {
+  animation-play-state: paused;
+}
+
+#scene[data-state="sleeping"] #clawd,
+#scene[data-state="dozing"] #clawd,
+#scene[data-state="mini-sleep"] #clawd {
+  animation-duration: 6.8s;
+}
+
+#scene[data-state="notification"] #status-bubble,
+#scene[data-state="error"] #status-bubble,
+#scene[data-state="attention"] #status-bubble {
+  box-shadow:
+    0 16px 34px -18px var(--bubble-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.4) inset,
+    0 0 0 8px rgba(255, 255, 255, 0.05);
+}
+
+@keyframes petFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes petReveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ringsDrift {
+  0%,
+  100% {
+    transform: scale(0.98);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-rings,
+  #clawd,
+  #clawd.state-enter {
+    animation: none !important;
+  }
+}

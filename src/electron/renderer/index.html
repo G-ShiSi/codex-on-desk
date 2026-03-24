@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codex on Desk</title>
+    <link rel="stylesheet" href="./app.css" />
+  </head>
+  <body>
+    <main id="scene" data-state="disconnected">
+      <div class="scene-glow" aria-hidden="true"></div>
+      <div class="scene-rings" aria-hidden="true"></div>
+      <div id="status-bubble" aria-live="polite" aria-atomic="true">
+        <span id="status-badge">Codex</span>
+        <p id="status-title">连接中</p>
+        <p id="status-detail">正在启动桌宠运行时</p>
+      </div>
+      <div id="pet-container">
+        <div class="pet-stage" aria-hidden="true"></div>
+        <object
+          id="clawd"
+          data="../assets/svg/clawd-disconnected.svg"
+          type="image/svg+xml"
+        ></object>
+      </div>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
