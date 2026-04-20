@@ -40,6 +40,7 @@ type EventListener = (event: MonitorEvent) => void | Promise<void>;
 const DEFAULT_SCAN_INTERVAL_MS = 1_500;
 const DEFAULT_ACTIVE_WINDOW_MS = 30 * 60 * 1_000;
 const INITIAL_TAIL_BYTES = 256 * 1024;
+const NEWLINE_BYTE = 0x0a;
 
 export class SessionFileMonitor {
   private readonly options: SessionFileMonitorResolvedOptions;
@@ -188,21 +189,38 @@ export class SessionFileMonitor {
   }
 
   private async readAppendedRecords(fileState: SessionFileState): Promise<void> {
-    const contents = await readFile(fileState.path, "utf8");
+    const contents = await readFile(fileState.path);
     if (contents.length <= fileState.offset) {
       return;
     }
 
-    const chunk = contents.slice(fileState.offset);
-    const endsWithNewline = chunk.endsWith("\n");
-    const lines = chunk.split("\n");
-    const completeLines = endsWithNewline ? lines.filter(Boolean) : lines.slice(0, -1).filter(Boolean);
+    const chunk = contents.subarray(fileState.offset);
+    let firstCompleteLineStart = 0;
 
-    if (completeLines.length === 0) {
+    // The initial tail offset is measured in bytes and can land in the middle
+    // of a UTF-8 sequence or JSONL record, so skip forward to the next newline.
+    if (fileState.offset > 0 && contents[fileState.offset - 1] !== NEWLINE_BYTE) {
+      const firstNewlineIndex = chunk.indexOf(NEWLINE_BYTE);
+      if (firstNewlineIndex === -1) {
+        return;
+      }
+      firstCompleteLineStart = firstNewlineIndex + 1;
+    }
+
+    const lastNewlineIndex = chunk.lastIndexOf(NEWLINE_BYTE);
+    if (lastNewlineIndex < firstCompleteLineStart) {
       return;
     }
 
-    fileState.offset += completeLines.reduce((total, line) => total + line.length + 1, 0);
+    const completeChunk = chunk.subarray(firstCompleteLineStart, lastNewlineIndex + 1);
+    const completeLines = completeChunk.toString("utf8").split("\n").filter(Boolean);
+
+    if (completeLines.length === 0) {
+      fileState.offset += lastNewlineIndex + 1;
+      return;
+    }
+
+    fileState.offset += lastNewlineIndex + 1;
 
     for (const line of completeLines) {
       const record = parseSessionRecord(line);

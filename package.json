@@ -11,6 +11,7 @@
     "social:svg": "node scripts/generate-social-svgs.mjs",
     "build:electron": "tsc -p tsconfig.electron.json",
     "electron": "npm run build:electron && electron dist/electron/electron/main.js",
+    "test": "node --import tsx --test tests/**/*.test.ts",
     "dist": "npm run build:electron && npm exec --yes --package electron-builder@26.8.1 electron-builder",
     "dist:dir": "npm run build:electron && npm exec --yes --package electron-builder@26.8.1 electron-builder -- --dir",
     "dist:mac": "npm run build:electron && npm exec --yes --package electron-builder@26.8.1 electron-builder -- --mac",
